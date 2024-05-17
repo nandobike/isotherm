@@ -186,8 +186,8 @@ with tab3:
                                ref_iso[:,1])
         st.text(f"V at alphaS: {V_at_alphaS:.2f}")
 
-        alphaS = ref_iso[:,1]/V_at_alphaS
-        print(alphaS)
+        alphaS_ref = ref_iso[:,1]/V_at_alphaS
+        #print(alphaS_ref)
         
 
     with col2:
@@ -197,10 +197,65 @@ with tab3:
         ax.grid(color='aliceblue')
         ax.set_ylabel("Adsorbed amount (cm$^3$/g)")
         ax.set_ylim(bottom=0)  # adjust the bottom leaving top unchanged
-        #ax.set_xscale('log')
         #ax.xaxis.set_major_locator(ticker.LogLocator(base=10, numticks=15))
         #ax.set_xlim(left=1e-8, right=1.4)
         fig.suptitle('Reference Isotherm')
         st.pyplot(fig)
 
+    st.divider()
+    st.header('Alpha-S Plot')
+
+    alphaS_sample = np.interp(exp_iso[:,0], ref_iso[:,0], alphaS_ref)
+    #print(alphaS_sample)
+
+
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        alpha_knee = st.number_input("Select Alpha value of the knee",
+                                    min_value=0.0,
+                                    max_value=1.5,
+                                    value=0.53,
+                                    step=0.01)
+    with col2:
+        alpha_linear = st.number_input("Select Alpha value where slope is linear",
+                                    min_value=0.0,
+                                    max_value=2.5,
+                                    value=1.1,
+                                    step=0.01)
     
+    #volume at the knee
+    alpha_knee_v = np.interp(alpha_knee, alphaS_sample, exp_iso[:,1])
+
+    #fit of top curve
+    alpha_fit_range = slice(np.where(alphaS_sample >= alpha_linear)[0][0],
+                            alphaS_sample.shape[0])
+    #print(alpha_fit_range)
+    alpha_slope, alpha_intercept, r, p, se = linregress(alphaS_sample[alpha_fit_range],
+                                                        exp_iso[:,1][alpha_fit_range])
+
+    print(alpha_slope, alpha_intercept)
+
+    fig, ax = plt.subplots(figsize=(6,4))
+    ax.plot(alphaS_sample, exp_iso[:,1], label='Alpha-S', marker='o', linestyle='none')
+    ax.plot([0, alpha_knee*1.8], [0, alpha_knee_v*1.8], marker=None, label='Total Area')
+    ax.plot([0, alphaS_sample[-1]],
+            [alpha_intercept, alphaS_sample[-1]*alpha_slope+alpha_intercept],
+            label='Micropore and External')
+    #ax.plot(alphaS_sample[alpha_fit_range],
+    #                                                    exp_iso[:,1][alpha_fit_range])
+    ax.set_xlabel('Alpha-S')
+    ax.grid(color='aliceblue')
+    ax.set_ylabel("Adsorbed amount (cm$^3$/g)")
+    ax.set_ylim(bottom=0)  # adjust the bottom leaving top unchanged
+    #ax.set_xscale('log')
+    #ax.xaxis.set_major_locator(ticker.LogLocator(base=10, numticks=15))
+    ax.set_xlim(left=0, right=2.5)
+    ax.set_title('Alpha-S Plot')
+    ax.legend()
+    st.pyplot(fig)
+
+    st.write(f'Total surface area= {alpha_knee_v/alpha_knee/V_at_alphaS*ref_data["SSA (m2/g):"]:.1f} m$^2$/g')
+    st.write(f'External surface area= {alpha_slope/V_at_alphaS*ref_data["SSA (m2/g):"]:.1f} m$^2$/g')
+    st.write(f'Micropore volume= {alpha_intercept/ref_data["Ratio density gas/liquid:"]:.4f} cm$^3$/g')
