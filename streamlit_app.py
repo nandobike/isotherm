@@ -10,9 +10,11 @@ from scipy.stats import linregress
 
 st.title('Gas Adsorption Isotherm Analysis')
 
-multi = '''Enjoy our App that integrates several gas isotherm analyses.
+multi = '''by **Fernando Vallejos-Burgos**
 
-Questions? Suggestions? Complaints? Shoot us an email: fvb@vallejos.cl
+This app integrates several gas isotherm analyses. For our most advanced method [go to 3D-PSD](https://3d-vis.streamlit.app)
+
+Questions? Suggestions? Complaints? Let me know!: fvb@vallejos.cl
 '''
 st.markdown(multi)
 
@@ -50,7 +52,9 @@ with tab1:
     ax[1].set_xscale('log')
     ax[1].xaxis.set_major_locator(ticker.LogLocator(base=10, numticks=15))
     ax[1].set_xlim(left=1e-8, right=1.4)
-    fig.suptitle('Experimental Isotherm and Interpolation to Kernel')
+    fig.suptitle('Experimental Isotherm')
+    ax[0].set_title('Linear P/P$_0$')
+    ax[1].set_title('Log P/P$_0$')
     st.pyplot(fig)
 
     #Need to add some asserts here
@@ -142,7 +146,6 @@ with tab3:
 
     If you use the program please remember [to cite us](https://raw.githubusercontent.com/nandobike/isotherm/main/S0008622320312525.bib).
 
-    Questions? Suggestions? Complaints? Shoot us an email: fvb@vallejos.cl
     '''
 
     st.markdown(multi)
