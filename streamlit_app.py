@@ -235,7 +235,7 @@ with tab3:
     alpha_slope, alpha_intercept, r, p, se = linregress(alphaS_sample[alpha_fit_range],
                                                         exp_iso[:,1][alpha_fit_range])
 
-    print(alpha_slope, alpha_intercept)
+    #print(alpha_slope, alpha_intercept)
 
     fig, ax = plt.subplots(figsize=(6,4))
     ax.plot(alphaS_sample, exp_iso[:,1], label='Alpha-S', marker='o', linestyle='none')
