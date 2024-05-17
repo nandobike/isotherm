@@ -177,5 +177,4 @@ with tab3:
                      "P/P0 alpha S:"]:
         st.text(f"{parameter} {ref_data[parameter]}")
 
-    st.text(ref_data["Temperature (K):"] +1)
     
