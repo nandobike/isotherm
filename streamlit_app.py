@@ -132,14 +132,27 @@ with tab2:
 
 
 with tab3:
-    multi = '''This is the app that solves the microstructure of a porous carbon based on the paper:
 
-    *S. Wang, F. Vallejos-Burgos, A. Furuse, Y. Yoshikawa, H. Tanaka and K. Kaneko et al.* **The subtracting pore effect method for an accurate and reliable surface area determination of porous carbons**, Carbon, Volume 175, 2021, 77-86.
+    multi = '''
+    Here we use the subtracting pore effect to solve porous structure of a carbon based on our paper:
+
+    *S. Wang, F. Vallejos-Burgos, A. Furuse, Y. Yoshikawa, H. Tanaka and K. Kaneko.* **"The subtracting pore effect method for an accurate and reliable surface area determination of porous carbons"**, Carbon, Volume 175, 2021, 77-86.
 
     [Here is our paper published in Carbon](https://doi.org/10.1016/j.carbon.2020.12.075)
 
-    If you use the program please remember [to cite us](Insert bib).
+    If you use the program please remember [to cite us](https://raw.githubusercontent.com/nandobike/isotherm/main/S0008622320312525.bib).
 
     Questions? Suggestions? Complaints? Shoot us an email: fvb@vallejos.cl
     '''
+
     st.markdown(multi)
+
+    #with open(r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv') as f:
+    st.write(np.genfromtxt(r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv',
+                           delimiter='\t',
+                           skip_header=8))
+
+    isotherm = r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv'
+    with open('./SPE_references/M-280_N2_77K.tsv') as f:
+        st.write(f.readlines())
+    print(isotherm)
