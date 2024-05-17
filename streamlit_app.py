@@ -147,12 +147,10 @@ with tab3:
 
     st.markdown(multi)
 
+    st.divider()
     st.header('Reference Isotherm Data')
 
     isotherm = './SPE_references/M-280_N2_77K.tsv'
-    st.write(f"Using file:  {isotherm}")
-
-    
     ref_iso = np.genfromtxt(isotherm,
                            delimiter='\t',
                            skip_header=8)
@@ -169,12 +167,40 @@ with tab3:
                     "P/P0 alpha S:"]:
         ref_data[parameter] = float(ref_data[parameter])
 
-    for parameter in ['Sample Name:',
-                     "Gas:",
-                     "Temperature (K):",
-                     "SSA (m2/g):",
-                     "Ratio density gas/liquid:",
-                     "P/P0 alpha S:"]:
-        st.text(f"{parameter} {ref_data[parameter]}")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.write(f"Using file:  {isotherm}")
+
+        #Show parameters in screen
+        for parameter in ['Sample Name:',
+                        "Gas:",
+                        "Temperature (K):",
+                        "SSA (m2/g):",
+                        "Ratio density gas/liquid:",
+                        "P/P0 alpha S:"]:
+            st.text(f"{parameter} {ref_data[parameter]}")
+        
+        V_at_alphaS = np.interp(ref_data["P/P0 alpha S:"],
+                               ref_iso[:,0],
+                               ref_iso[:,1])
+        st.text(f"V at alphaS: {V_at_alphaS:.2f}")
+
+        alphaS = ref_iso[:,1]/V_at_alphaS
+        print(alphaS)
+        
+
+    with col2:
+        fig, ax = plt.subplots(figsize=(4,3))
+        ax.plot(ref_iso[:,0], ref_iso[:,1],label='Experimental', marker='o', linestyle='none')
+        ax.set_xlabel('Relative pressure P/P$_0$')
+        ax.grid(color='aliceblue')
+        ax.set_ylabel("Adsorbed amount (cm$^3$/g)")
+        ax.set_ylim(bottom=0)  # adjust the bottom leaving top unchanged
+        #ax.set_xscale('log')
+        #ax.xaxis.set_major_locator(ticker.LogLocator(base=10, numticks=15))
+        #ax.set_xlim(left=1e-8, right=1.4)
+        fig.suptitle('Reference Isotherm')
+        st.pyplot(fig)
 
     
