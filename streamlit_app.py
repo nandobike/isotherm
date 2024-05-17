@@ -36,7 +36,7 @@ with tab1:
 
     #if isinstance(file, str):
     exp_iso = np.genfromtxt(file, delimiter="\t") #load isotherm file into numpy array
-    print(exp_iso)
+    #print(exp_iso)
 
     fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(8,4), sharey=True, constrained_layout=True)
     #fig.tight_layout()
@@ -147,12 +147,35 @@ with tab3:
 
     st.markdown(multi)
 
-    #with open(r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv') as f:
-    st.write(np.genfromtxt(r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv',
-                           delimiter='\t',
-                           skip_header=8))
+    st.header('Reference Isotherm Data')
 
-    isotherm = r'https://raw.githubusercontent.com/nandobike/isotherm/main/SPE_references/M-280_N2_77K.tsv'
-    with open('./SPE_references/M-280_N2_77K.tsv') as f:
-        st.write(f.readlines())
-    print(isotherm)
+    isotherm = './SPE_references/M-280_N2_77K.tsv'
+    st.write(f"Using file:  {isotherm}")
+
+    
+    ref_iso = np.genfromtxt(isotherm,
+                           delimiter='\t',
+                           skip_header=8)
+
+    with open(isotherm) as f:
+        ref_data = []
+        for i in range(6): #read the first 6 lines into a list
+            ref_data.append(f.readline().strip().split('\t'))
+    ref_data = dict(ref_data) #convert the list into dictionary
+
+    for parameter in ["Temperature (K):",
+                    "SSA (m2/g):",
+                    "Ratio density gas/liquid:",
+                    "P/P0 alpha S:"]:
+        ref_data[parameter] = float(ref_data[parameter])
+
+    for parameter in ['Sample Name:',
+                     "Gas:",
+                     "Temperature (K):",
+                     "SSA (m2/g):",
+                     "Ratio density gas/liquid:",
+                     "P/P0 alpha S:"]:
+        st.text(f"{parameter} {ref_data[parameter]}")
+
+    st.text(ref_data["Temperature (K):"] +1)
+    
